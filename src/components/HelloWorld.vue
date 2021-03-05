@@ -6,6 +6,8 @@
     <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Documentation</a>
   </p>
 
+  <Button @click="state.count++" label="Count"></Button>
+
   <button @click="state.count++">count is: {{ state.count }}</button>
   <p>
     Edit
