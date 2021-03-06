@@ -24,6 +24,7 @@ const app = createApp(Root)
 
 app.use(VueDiff)
 
+axios.defaults.baseURL = import.meta.env.VITE_BASE_API
 app.use(VueAxios, axios)
 
 app.use(PrimeVue);

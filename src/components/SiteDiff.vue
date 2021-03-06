@@ -61,6 +61,7 @@
 
 <script>
 import moment from 'moment'
+import axios from "axios";
 
 export default {
   name: "SiteDiff",
@@ -71,7 +72,7 @@ export default {
       selectedSite: null,
       selectedPrevious: null,
       selectedCurrent: null,
-      siteUpdates: [],
+      siteUpdates: []
     }
   },
   mounted () {
@@ -80,36 +81,27 @@ export default {
   methods: {
     async getSites () {
       try {
-        // const resp = await this.axios.get('http://localhost:8080/api/public/sites?size=1000')
-        const resp = await this.axios.get('https://earth-2-biomes.herokuapp.com/api/public/sites?size=1000')
-        console.log(resp.data)
+        const resp = await this.axios.get('/sites?size=1000')
         this.sites = resp.data
       } catch (err) {
-        // Handle Error Here
         // console.error(err);
         return null
       }
     },
     async getSiteUpdates () {
       try {
-        // const resp = await this.axios.get('http://localhost:8080/api/public/siteUpdate/' + this.selectedSite.id)
-        const resp = await this.axios.get('https://earth-2-biomes.herokuapp.com/api/public/siteUpdate/' + this.selectedSite.id)
-        console.log(resp.data)
+        const resp = await this.axios.get('/siteUpdate/' + this.selectedSite.id)
         this.siteUpdates = resp.data.recordUpdateList
-        // this.siteUpdates = data.recordUpdateList.map((update) => {
-        // })
-        console.log(this.siteUpdates)
+            .sort((a, b) => (a.watchDTO.name > b.watchDTO.name) ? 1 : -1)
+
       } catch (err) {
-        // Handle Error Here
         // console.error(err);
         return null
       }
     },
     async updatePrevious(event, update) {
-      console.log('updatePrevious')
       try {
-        // const resp = await this.axios.get('http://localhost:8080/api/public/watch-records/' + this.selectedPrevious.id)
-        const resp = await this.axios.get('https://earth-2-biomes.herokuapp.com/api/public/watch-records/' + this.selectedSite.id)
+        const resp = await this.axios.get('/watch-records/' + this.selectedPrevious.id)
         update.previousVersion.content = resp.data.content
       } catch (err) {
         // console.error(err);
@@ -117,10 +109,8 @@ export default {
       }
     },
     async updateCurrent(event, update) {
-      console.log('updateCurrent')
       try {
-        // const resp = await this.axios.get('http://localhost:8080/api/public/watch-records/' + this.selectedCurrent.id)
-        const resp = await this.axios.get('https://earth-2-biomes.herokuapp.com/api/public/watch-records/' + this.selectedSite.id)
+        const resp = await this.axios.get('/watch-records/' + this.selectedCurrent.id)
         update.currentVersion.content = resp.data.content
       } catch (err) {
         // console.error(err);
