@@ -52,6 +52,7 @@
             :language="getLanguage(update.watchDTO.type)"
             :prev="update.previousVersion.content"
             :current="update.currentVersion.content"
+            class="p-text-left"
         />
       </AccordionTab>
 
@@ -91,8 +92,19 @@ export default {
     async getSiteUpdates () {
       try {
         const resp = await this.axios.get('/siteUpdate/' + this.selectedSite.id)
+        console.log(resp.data)
         this.siteUpdates = resp.data.recordUpdateList
+            .map(update => {
+              if(update.watchDTO.type === "REQUEST"){
+                update.currentVersion.content = JSON.stringify(JSON.parse(update.currentVersion.content),null,2);
+                if(update.previousVersion.content !== "") {
+                  update.previousVersion.content = JSON.stringify(JSON.parse(update.previousVersion.content), null, 2);
+                }
+              }
+              return update
+            })
             .sort((a, b) => (a.watchDTO.name > b.watchDTO.name) ? 1 : -1)
+
 
       } catch (err) {
         // console.error(err);
@@ -102,7 +114,11 @@ export default {
     async updatePrevious(event, update) {
       try {
         const resp = await this.axios.get('/watch-records/' + this.selectedPrevious.id)
-        update.previousVersion.content = resp.data.content
+        if(resp.data.watch.type === "REQUEST" && resp.data.content !== ""){
+          update.previousVersion.content = JSON.stringify(JSON.parse(resp.data.content), null, 2);
+        } else {
+          update.previousVersion.content = resp.data.content
+        }
       } catch (err) {
         // console.error(err);
         return null
@@ -111,7 +127,11 @@ export default {
     async updateCurrent(event, update) {
       try {
         const resp = await this.axios.get('/watch-records/' + this.selectedCurrent.id)
-        update.currentVersion.content = resp.data.content
+        if(resp.data.watch.type === "REQUEST" && resp.data.content !== ""){
+            update.currentVersion.content = JSON.stringify(JSON.parse(resp.data.content), null, 2)
+        } else {
+          update.currentVersion.content = resp.data.content
+        }
       } catch (err) {
         // console.error(err);
         return null
@@ -126,6 +146,9 @@ export default {
         case 'PAGE_SCRIPT':
           result = 'javascript'
           break;
+        case 'REQUEST':
+          result = 'json'
+          break
         default:
           console.log('Watch type not found')
       }
