@@ -5,6 +5,7 @@ import VueDiff from 'vue-diff'
 import 'vue-diff/dist/index.css'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import router from "./router/index"
 
 import PrimeVue from 'primevue/config';
 import Dialog from 'primevue/dialog';
@@ -14,7 +15,6 @@ import AccordionTab from 'primevue/accordiontab';
 import Dropdown from 'primevue/dropdown';
 import Divider from 'primevue/divider';
 
-
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
@@ -23,6 +23,7 @@ import 'primeflex/primeflex.css';
 
 const app = createApp(Root)
 
+app.use(router)
 app.use(VueDiff)
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_API
